@@ -12,78 +12,6 @@
 
 <script>
 // --- SAFETY CHECK: SHOW ERRORS ON SCREEN ---
-window.onerror = function(msg, url, line) {
-  document.body.innerHTML = "<h1 style='color:red;'>ERROR:</h1><p>" + msg + "</p>";
-};
-
-// --- SETUP ---
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
-
-// --- PLAYER ---
-const player = { x: 100, y: 300, w: 80, h: 80, vy: 0, onGround: false };
-
-// --- LEVEL ---
-const platforms = [
-  { x: 0, y: 450, w: 2000, h: 50 },
-  { x: 300, y: 350, w: 200, h: 30 },
-  { x: 700, y: 300, w: 200, h: 30 }
-];
-
-// --- INPUT ---
-const keys = {};
-document.addEventListener("keydown", e => keys[e.code] = true);
-document.addEventListener("keyup", e => keys[e.code] = false);
-
-// --- GAME LOOP ---
-function update() {
-  // gravity
-  player.vy += 0.5;
-  player.y += player.vy;
-
-  // simple collision
-  player.onGround = false;
-  for (let p of platforms) {
-    if (player.x < p.x + p.w &&
-        player.x + player.w > p.x &&
-        player.y < p.y + p.h &&
-        player.y + player.h > p.y) {
-
-      player.y = p.y - player.h;
-      player.vy = 0;
-      player.onGround = true;
-    }
-  }
-
-  // jump
-  if (keys["Space"] && player.onGround) {
-    player.vy = -12;
-  }
-}
-
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  // platforms
-  ctx.fillStyle = "brown";
-  for (let p of platforms) {
-    ctx.fillRect(p.x, p.y, p.w, p.h);
-  }
-
-  // player
-  ctx.fillStyle = "hotpink";
-  ctx.fillRect(player.x, player.y, player.w, player.h);
-}
-
-function loop() {
-  update();
-  draw();
-  requestAnimationFrame(loop);
-}
-
-loop();
-  <script>
-// --- SAFETY CHECK: SHOW ERRORS ON SCREEN ---
 window.onerror = function(msg) {
   document.body.innerHTML = "<h1 style='color:red;'>ERROR:</h1><p>" + msg + "</p>";
 };
@@ -121,6 +49,7 @@ document.addEventListener("keyup", e => keys[e.code] = false);
 function update() {
   // horizontal movement
   player.vx = 0;
+
   if (keys["ArrowLeft"] || keys["KeyA"]) player.vx = -player.speed;
   if (keys["ArrowRight"] || keys["KeyD"]) player.vx = player.speed;
 
