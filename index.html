@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Kawaii's Adventure</title>
+<style>
+  body { margin:0; background:#a3d9ff; }
+  canvas { display:block; margin:0 auto; background:#c6f0ff; }
+</style>
+</head>
+<body>
+<canvas id="game" width="800" height="450"></canvas>
+
+<script>
+// ------------------------------
+// GAME SETUP
+// ------------------------------
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+const GRAVITY = 0.6;
+const PLAYER_SPEED = 4;
+const JUMP_FORCE = 12;
+
+// ------------------------------
+// PLAYER
+// ------------------------------
+const player = {
+  x: 100,
+  y: 0,
+  w
