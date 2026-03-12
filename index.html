@@ -5,7 +5,7 @@
 <style>
   body { 
     margin:0; 
-    background:#87CEFA; /* Make the whole page blue */
+    background:#87CEFA; 
   }
   canvas { 
     background:#87CEFA; 
@@ -48,13 +48,30 @@ const platforms = [
 
   // WHITE BOUNCY BLOCKS
   { x: 500, y: 420, w: 80, h: 30, color: "white" },
-  { x: 850, y: 380, w: 80, h: 30, color: "white" }
+  { x: 850, y: 380, w: 80, h: 30, color: "white" },
+
+  // NEW PLATFORM TO THE RIGHT (with a gap before it)
+  { x: 1200, y: 420, w: 300, h: 30, color: "brown" }
+];
+
+// --- NEW SPIKES ---
+const spikes = [
+  { x: 1250, y: 390, w: 40, h: 30 },
+  { x: 1300, y: 390, w: 40, h: 30 },
+  { x: 1350, y: 390, w: 40, h: 30 }
 ];
 
 // --- INPUT ---
 const keys = {};
 document.addEventListener("keydown", e => keys[e.code] = true);
 document.addEventListener("keyup", e => keys[e.code] = false);
+
+// --- RESET PLAYER ---
+function resetPlayer() {
+  player.x = 100;
+  player.y = 300;
+  player.vy = 0;
+}
 
 // --- GAME LOOP ---
 function update() {
@@ -125,6 +142,16 @@ function update() {
       }
     }
   }
+
+  // --- SPIKE COLLISION (death/reset) ---
+  for (let s of spikes) {
+    if (player.x < s.x + s.w &&
+        player.x + player.w > s.x &&
+        player.y < s.y + s.h &&
+        player.y + player.h > s.y) {
+      resetPlayer();
+    }
+  }
 }
 
 function draw() {
@@ -134,6 +161,16 @@ function draw() {
   for (let p of platforms) {
     ctx.fillStyle = p.color;
     ctx.fillRect(p.x, p.y, p.w, p.h);
+  }
+
+  // spikes
+  ctx.fillStyle = "red";
+  for (let s of spikes) {
+    ctx.beginPath();
+    ctx.moveTo(s.x, s.y + s.h);
+    ctx.lineTo(s.x + s.w / 2, s.y);
+    ctx.lineTo(s.x + s.w, s.y + s.h);
+    ctx.fill();
   }
 
   // player
