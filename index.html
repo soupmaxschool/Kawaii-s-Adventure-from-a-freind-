@@ -11,7 +11,7 @@
 <canvas id="game" width="900" height="500"></canvas>
 
 <script>
-// --- SAFETY CHECK: SHOW ERRORS ON SCREEN ---
+// --- SAFETY CHECK ---
 window.onerror = function(msg) {
   document.body.innerHTML = "<h1 style='color:red;'>ERROR:</h1><p>" + msg + "</p>";
 };
@@ -20,12 +20,15 @@ window.onerror = function(msg) {
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
+// --- ZOOM FACTOR ---
+const ZOOM = 1.5;
+
 // --- PLAYER ---
 const player = {
   x: 100,
   y: 300,
-  w: 80,
-  h: 80,
+  w: 80 * ZOOM,
+  h: 80 * ZOOM,
   vx: 0,
   vy: 0,
   speed: 6,
@@ -70,6 +73,10 @@ function update() {
   player.x += player.vx;
   player.y += player.vy;
 
+  // --- PREVENT WALKING OUT OF SCREEN ---
+  if (player.x < 0) player.x = 0;
+  if (player.x + player.w > canvas.width) player.x = canvas.width - player.w;
+
   // --- FULL 4-WAY COLLISION + BOUNCE ---
   player.onGround = false;
 
@@ -88,7 +95,7 @@ function update() {
         if (p.color === "white") {
           // BOUNCE!
           player.y = p.y - player.h;
-          player.vy = -20; // bounce power
+          player.vy = -20;
         } else {
           // normal platform
           player.y = p.y - player.h;
@@ -119,6 +126,9 @@ function update() {
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+  ctx.save();
+  ctx.scale(ZOOM, ZOOM);
+
   // platforms
   for (let p of platforms) {
     ctx.fillStyle = p.color;
@@ -128,6 +138,8 @@ function draw() {
   // player
   ctx.fillStyle = "hotpink";
   ctx.fillRect(player.x, player.y, player.w, player.h);
+
+  ctx.restore();
 }
 
 function loop() {
