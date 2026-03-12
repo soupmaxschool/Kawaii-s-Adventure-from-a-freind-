@@ -35,9 +35,13 @@ const player = {
 
 // --- LEVEL ---
 const platforms = [
-  { x: 0, y: 450, w: 2000, h: 50 },
-  { x: 300, y: 350, w: 200, h: 30 },
-  { x: 700, y: 300, w: 200, h: 30 }
+  { x: 0, y: 450, w: 2000, h: 50, color: "brown" },
+  { x: 300, y: 350, w: 200, h: 30, color: "brown" },
+  { x: 700, y: 300, w: 200, h: 30, color: "brown" },
+
+  // WHITE BOUNCY BLOCKS
+  { x: 500, y: 420, w: 80, h: 30, color: "white" },
+  { x: 850, y: 380, w: 80, h: 30, color: "white" }
 ];
 
 // --- INPUT ---
@@ -66,18 +70,47 @@ function update() {
   player.x += player.vx;
   player.y += player.vy;
 
-  // collision
+  // --- FULL 4-WAY COLLISION + BOUNCE ---
   player.onGround = false;
+
   for (let p of platforms) {
     if (player.x < p.x + p.w &&
         player.x + player.w > p.x &&
         player.y < p.y + p.h &&
         player.y + player.h > p.y) {
 
-      if (player.vy > 0) {
-        player.y = p.y - player.h;
+      const prevX = player.x - player.vx;
+      const prevY = player.y - player.vy;
+
+      // LANDING ON TOP
+      if (prevY + player.h <= p.y) {
+
+        if (p.color === "white") {
+          // BOUNCE!
+          player.y = p.y - player.h;
+          player.vy = -20; // bounce power
+        } else {
+          // normal platform
+          player.y = p.y - player.h;
+          player.vy = 0;
+          player.onGround = true;
+        }
+      }
+
+      // HITTING FROM BELOW
+      else if (prevY >= p.y + p.h) {
+        player.y = p.y + p.h;
         player.vy = 0;
-        player.onGround = true;
+      }
+
+      // LEFT SIDE
+      else if (prevX + player.w <= p.x) {
+        player.x = p.x - player.w;
+      }
+
+      // RIGHT SIDE
+      else if (prevX >= p.x + p.w) {
+        player.x = p.x + p.w;
       }
     }
   }
@@ -87,8 +120,8 @@ function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   // platforms
-  ctx.fillStyle = "brown";
   for (let p of platforms) {
+    ctx.fillStyle = p.color;
     ctx.fillRect(p.x, p.y, p.w, p.h);
   }
 
