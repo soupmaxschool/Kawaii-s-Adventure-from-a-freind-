@@ -3,8 +3,15 @@
 <head>
 <title>Kawaii's Adventure</title>
 <style>
-  body { margin:0; }
-  canvas { background:#87CEFA; display:block; margin:0 auto; }
+  body { 
+    margin:0; 
+    background:#87CEFA; /* Make the whole page blue */
+  }
+  canvas { 
+    background:#87CEFA; 
+    display:block; 
+    margin:0 auto; 
+  }
 </style>
 </head>
 <body>
@@ -20,15 +27,12 @@ window.onerror = function(msg) {
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
-// --- ZOOM FACTOR ---
-const ZOOM = 1.5;
-
 // --- PLAYER ---
 const player = {
   x: 100,
   y: 300,
-  w: 80 * ZOOM,
-  h: 80 * ZOOM,
+  w: 80,
+  h: 80,
   vx: 0,
   vy: 0,
   speed: 6,
@@ -126,9 +130,6 @@ function update() {
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  ctx.save();
-  ctx.scale(ZOOM, ZOOM);
-
   // platforms
   for (let p of platforms) {
     ctx.fillStyle = p.color;
@@ -138,8 +139,6 @@ function draw() {
   // player
   ctx.fillStyle = "hotpink";
   ctx.fillRect(player.x, player.y, player.w, player.h);
-
-  ctx.restore();
 }
 
 function loop() {
