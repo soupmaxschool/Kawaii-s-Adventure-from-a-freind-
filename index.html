@@ -27,6 +27,10 @@ window.onerror = function(msg) {
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
+// CAMERA
+let camX = 0;
+let camY = 0;
+
 // --- PLAYER ---
 const player = {
   x: 100,
@@ -95,7 +99,6 @@ function update() {
 
   // --- PREVENT WALKING OUT OF SCREEN ---
   if (player.x < 0) player.x = 0;
-  if (player.x + player.w > canvas.width) player.x = canvas.width - player.w;
 
   // --- FULL 4-WAY COLLISION + BOUNCE ---
   player.onGround = false;
@@ -151,6 +154,10 @@ function update() {
       resetPlayer();
     }
   }
+
+  // --- CAMERA FOLLOWS PLAYER ---
+  camX = player.x - canvas.width / 2 + player.w / 2;
+  camY = player.y - canvas.height / 2 + player.h / 2;
 }
 
 function draw() {
@@ -159,22 +166,22 @@ function draw() {
   // platforms
   for (let p of platforms) {
     ctx.fillStyle = p.color;
-    ctx.fillRect(p.x, p.y, p.w, p.h);
+    ctx.fillRect(p.x - camX, p.y - camY, p.w, p.h);
   }
 
   // spikes
   ctx.fillStyle = "red";
   for (let s of spikes) {
     ctx.beginPath();
-    ctx.moveTo(s.x, s.y + s.h);
-    ctx.lineTo(s.x + s.w / 2, s.y);
-    ctx.lineTo(s.x + s.w, s.y + s.h);
+    ctx.moveTo(s.x - camX, s.y + s.h - camY);
+    ctx.lineTo(s.x + s.w / 2 - camX, s.y - camY);
+    ctx.lineTo(s.x + s.w - camX, s.y + s.h - camY);
     ctx.fill();
   }
 
   // player
   ctx.fillStyle = "hotpink";
-  ctx.fillRect(player.x, player.y, player.w, player.h);
+  ctx.fillRect(player.x - camX, player.y - camY, player.w, player.h);
 }
 
 function loop() {
