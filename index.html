@@ -160,11 +160,14 @@ function update() {
   if (player.y > 1200) {
     setTimeout(() => {
       resetPlayer();
-    }, 500); // 0.5 second delay
+    }, 500);
   }
 
   // --- CAMERA FOLLOWS PLAYER ---
-  camX = player.x - canvas.width / 2 + player.w / 2;
+  // SMOOTH HORIZONTAL CAMERA (fixes huge movement)
+  camX += (player.x - canvas.width / 2 + player.w / 2 - camX) * 0.1;
+
+  // vertical camera unchanged
   camY = player.y - canvas.height / 2 + player.h / 2;
 }
 
