@@ -156,6 +156,13 @@ function update() {
     }
   }
 
+  // --- FALLING DEATH (not instant) ---
+  if (player.y > 1200) {
+    setTimeout(() => {
+      resetPlayer();
+    }, 500); // 0.5 second delay
+  }
+
   // --- CAMERA FOLLOWS PLAYER ---
   camX = player.x - canvas.width / 2 + player.w / 2;
   camY = player.y - canvas.height / 2 + player.h / 2 - 150;
